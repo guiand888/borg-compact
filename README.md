@@ -1,5 +1,7 @@
 # Borg Backup Compaction
 
+[![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
+
 Automated Borg repository compaction with quota management and healthcheck integration
 
 [![asciicast](https://raw.githubusercontent.com/guiand888/borg-compact/assets/borg-compact-asciinema.svg)](https://asciinema.org)
@@ -7,6 +9,14 @@ Automated Borg repository compaction with quota management and healthcheck integ
 ## Background
 
 Automates compaction of Borg backup repositories running in Docker containers. Handles quota adjustments when repository size exceeds limits, integrates with UptimeKuma for monitoring, and includes dry-run capability for safe testing.
+
+A typical use case is compact "**append-only**" repos managed with [Borg Warehouse](https://borgwarehouse.com/). Repose need to be compacted server-side and doing so by hand over a large number of a repos can be very cumbersome. The method used in this script will autonomously list:
+
+- list provisioned repos
+- work around quota discrepencies if any
+- compact repos
+- notify the admin of any success/failure through [Uptime Kuma](https://uptimekuma.org/)
+- does not require (manually or not) disabling "append-only mode" in Borg Warehouse
 
 **Quota Management Note:** Borg Warehouse sets quotas via SSH command restrictions (`borg serve --storage-quota`), but `borg compact` enforces the repository's own `storage_quota` config. When actual usage exceeds this quota, the script temporarily expands it above current usage, runs compact, then restores the original quota.
 
